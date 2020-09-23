@@ -10,7 +10,7 @@ namespace tthk_xamarin_grid
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new CrossZeroGame();
         }
 
         protected override void OnStart()
