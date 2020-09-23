@@ -11,7 +11,6 @@ namespace tthk_xamarin_grid
     public partial class MainPage : ContentPage
     {
         BoxView boxView;
-        List<BoxView> clickedBoxViews = new List<BoxView> { };
         const int GRID_COLUMNS_ROWS_NUM = 5; // Grid will be 5x5
         const string CELL_SKYBLUE_COLOR = "#0099FF";
         public MainPage()
@@ -38,6 +37,7 @@ namespace tthk_xamarin_grid
             Content = grid;
         }
 
+        List<BoxView> clickedBoxViews = new List<BoxView> { };
         private void Tap_Tapped(object sender, EventArgs e)
         {
             BoxView boxView = sender as BoxView;
