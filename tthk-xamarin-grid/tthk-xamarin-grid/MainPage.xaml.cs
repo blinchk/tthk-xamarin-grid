@@ -61,7 +61,7 @@ namespace tthk_xamarin_grid
             }
             else
             {
-                clickedBoxViews.Add(boxView, 1);
+                clickedBoxViews.Add(boxView, 2);
                 boxView.Color = Color.ForestGreen;
             }
                    
