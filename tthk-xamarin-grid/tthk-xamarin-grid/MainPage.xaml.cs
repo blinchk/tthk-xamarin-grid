@@ -11,19 +11,20 @@ namespace tthk_xamarin_grid
     public partial class MainPage : ContentPage
     {
         BoxView boxView;
+        const int GRID_COLUMNS_ROWS_NUM = 5; // Grid will be 5x5
         public MainPage()
         {
             Grid grid = new Grid();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < GRID_COLUMNS_ROWS_NUM; i++)
             {
                 grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < GRID_COLUMNS_ROWS_NUM; i++)
             {
-                for (int j = 0; j < 5; j++)
+                for (int j = 0; j < GRID_COLUMNS_ROWS_NUM; j++)
                 {
                     boxView = new BoxView { Color = Color.FromHex("#0099FF") };
                     grid.Children.Add(boxView, i, j);
