@@ -30,7 +30,7 @@ namespace tthk_xamarin_grid
                     boxView = new BoxView { Color = Color.FromHex(CELL_SKYBLUE_COLOR) };
                     grid.Children.Add(boxView, i, j);
                     var tap = new TapGestureRecognizer();
-                    tap.Tapped += Tap_Tapped;
+                    tap.Tapped += BoxViewTapped;
                     boxView.GestureRecognizers.Add(tap);
                 }
             }
@@ -38,7 +38,7 @@ namespace tthk_xamarin_grid
         }
 
         List<BoxView> clickedBoxViews = new List<BoxView> { };
-        private void Tap_Tapped(object sender, EventArgs e)
+        private void BoxViewTapped(object sender, EventArgs e)
         {
             BoxView boxView = sender as BoxView;
             if (clickedBoxViews.Contains(boxView))
