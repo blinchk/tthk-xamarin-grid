@@ -37,21 +37,34 @@ namespace tthk_xamarin_grid
             Content = grid;
         }
 
-        List<BoxView> clickedBoxViews = new List<BoxView> { };
+        public Dictionary<BoxView, int> clickedBoxViews = new Dictionary<BoxView, int> { };
         private void BoxViewTapped(object sender, EventArgs e)
         {
             BoxView boxView = sender as BoxView;
-            if (clickedBoxViews.Contains(boxView))
+            if (clickedBoxViews.ContainsKey(boxView))
             {
-                boxView.Color = Color.FromHex(CELL_SKYBLUE_COLOR);
-                clickedBoxViews.Remove(boxView);
+                switch (clickedBoxViews[boxView])
+                {
+                    case 0:
+                        boxView.Color = Color.FromHex(CELL_SKYBLUE_COLOR);
+                        clickedBoxViews[boxView]++;
+                        break;
+                    case 1:
+                        boxView.Color = Color.ForestGreen;
+                        clickedBoxViews[boxView]++;
+                        break;
+                    case 2:
+                        boxView.Color = Color.Tomato;
+                        clickedBoxViews[boxView] = 0;
+                        break;
+                }
             }
             else
             {
-                boxView.Color = Color.Tomato;
-                clickedBoxViews.Add(boxView);
+                clickedBoxViews.Add(boxView, 1);
+                boxView.Color = Color.ForestGreen;
             }
-            
+                   
         }
     }
 }
