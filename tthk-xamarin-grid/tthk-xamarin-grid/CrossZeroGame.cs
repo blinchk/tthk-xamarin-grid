@@ -73,12 +73,12 @@ namespace tthk_xamarin_grid
             if (turn = true)
             {
                 turn = false;
-                currentTurn.Text = "X player turn";
+                currentTurn.Text = "O player turn";
             }
             else
             {
                 turn = true;
-                currentTurn.Text = "O player turn";
+                currentTurn.Text = "X player turn";
             }
         }
 
