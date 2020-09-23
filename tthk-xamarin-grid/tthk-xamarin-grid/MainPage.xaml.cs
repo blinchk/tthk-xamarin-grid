@@ -11,7 +11,9 @@ namespace tthk_xamarin_grid
     public partial class MainPage : ContentPage
     {
         BoxView boxView;
+        List<BoxView> clickedBoxViews = new List<BoxView> { };
         const int GRID_COLUMNS_ROWS_NUM = 5; // Grid will be 5x5
+        const string CELL_SKYBLUE_COLOR = "#0099FF";
         public MainPage()
         {
             Grid grid = new Grid();
@@ -26,7 +28,7 @@ namespace tthk_xamarin_grid
             {
                 for (int j = 0; j < GRID_COLUMNS_ROWS_NUM; j++)
                 {
-                    boxView = new BoxView { Color = Color.FromHex("#0099FF") };
+                    boxView = new BoxView { Color = Color.FromHex(CELL_SKYBLUE_COLOR) };
                     grid.Children.Add(boxView, i, j);
                     var tap = new TapGestureRecognizer();
                     tap.Tapped += Tap_Tapped;
@@ -39,7 +41,17 @@ namespace tthk_xamarin_grid
         private void Tap_Tapped(object sender, EventArgs e)
         {
             BoxView boxView = sender as BoxView;
-            boxView.Color = Color.Tomato;
+            if (clickedBoxViews.Contains(boxView))
+            {
+                boxView.Color = Color.FromHex(CELL_SKYBLUE_COLOR);
+                clickedBoxViews.Remove(boxView);
+            }
+            else
+            {
+                boxView.Color = Color.Tomato;
+                clickedBoxViews.Add(boxView);
+            }
+            
         }
     }
 }
