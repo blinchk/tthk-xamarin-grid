@@ -13,24 +13,13 @@ namespace tthk_xamarin_grid
         BoxView boxView;
         public MainPage()
         {
-            Grid grid = new Grid() {
-                RowDefinitions =
-                {
-                    new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }
-                },
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition {Width = new GridLength(1,GridUnitType.Star) },
-                    new ColumnDefinition {Width = new GridLength(1,GridUnitType.Star) },
-                    new ColumnDefinition {Width = new GridLength(1,GridUnitType.Star) },
-                    new ColumnDefinition {Width = new GridLength(1,GridUnitType.Star) },
-                    new ColumnDefinition {Width = new GridLength(1,GridUnitType.Star) }
-                }
-            };
+            Grid grid = new Grid();
+
+            for (int i = 0; i < 5; i++)
+            {
+                grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            }
 
             for (int i = 0; i < 5; i++)
             {
@@ -38,18 +27,18 @@ namespace tthk_xamarin_grid
                 {
                     boxView = new BoxView { Color = Color.FromHex("#0099FF") };
                     grid.Children.Add(boxView, i, j);
+                    var tap = new TapGestureRecognizer();
+                    tap.Tapped += Tap_Tapped;
+                    boxView.GestureRecognizers.Add(tap);
                 }
             }
-
-            var tap = new TapGestureRecognizer();
-            tap.Tapped += BoxTapped;
-            boxView.GestureRecognizers.Add(tap);
-
             Content = grid;
         }
 
-        private void BoxTapped(object sender, EventArgs e)
+        private void Tap_Tapped(object sender, EventArgs e)
         {
+            BoxView boxView = sender as BoxView;
+            boxView.Color = Color.Tomato;
         }
     }
 }
