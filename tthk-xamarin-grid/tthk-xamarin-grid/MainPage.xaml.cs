@@ -43,6 +43,8 @@ namespace tthk_xamarin_grid
 
             var tap = new TapGestureRecognizer();
             tap.Tapped += BoxTapped;
+            boxView.GestureRecognizers.Add(tap);
+
             Content = grid;
         }
 
