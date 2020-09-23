@@ -44,7 +44,8 @@ namespace tthk_xamarin_grid
 
             currentTurn = new Label()
             {
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand
             };
 
             resetGameButton = new Button()
