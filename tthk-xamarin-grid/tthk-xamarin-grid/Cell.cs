@@ -1,41 +1,64 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using System.ComponentModel;
+using Xamarin.Forms;
 
 namespace tthk_xamarin_grid
 {
     class Cell : Image
     {
-        const string CELL_DEEPSKYBLUE_COLOR = "#0099FF";
-        int _CellStatus;
-        int[] _CellPosition;
-
+        const string CellDeepskyblueColor = "#0099FF";
         public Cell(int row, int column) 
         {
             HeightRequest = 125;
-            BackgroundColor = Color.FromHex(CELL_DEEPSKYBLUE_COLOR);
-            _CellPosition = new int[2] { row, column };
+            BackgroundColor = Color.FromHex(CellDeepskyblueColor);
+            this.Column = column;
+            this.Row = row;
+            this.Status = CrossZeroValues.Null;
         }
 
-        public int[] CellsPosition
+        public int Row
         {
-            get => _CellPosition;
+            get => Row;
+            set => Row = value;
+
+        }
+        
+        public int Column
+        {
+            get => Column;
+            set => Column = value;
+
         }
 
         public int CellStatus
         {
-            get => _CellStatus;
-            set => _CellStatus = value;
+            get => CellStatus;
+            set => CellStatus = value;
         }
 
-        public void SetCross()
+        public CrossZeroValues Status
         {
-            Source = "cross.png";
+            get
+            {
+                return Status;
+            }
+            set
+            {
+                if (value == CrossZeroValues.Cross)
+                {
+                    this.Source = "cross.png";
+                }
+                else if (value == CrossZeroValues.Zero)
+                {
+                    this.Source = "zero.png";
+                }
+                else
+                {
+                    this.Source = "";
+                }
+
+                Status = value;
+            }
         }
-
-        public void SetZero()
-        {
-            Source = "zero.png";
-        }
-
-
     }
 }
