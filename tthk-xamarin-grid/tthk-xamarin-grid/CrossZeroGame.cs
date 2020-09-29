@@ -1,25 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Resources;
+using System.Text;
+
 using Xamarin.Forms;
-using static tthk_xamarin_grid.CrossZeroValues;
+using Xamarin.Forms.Internals;
+using Xamarin.Forms.Markup;
+using Xamarin.Forms.Xaml;
 
 namespace tthk_xamarin_grid
 {
 	public class CrossZeroGame : ContentPage
     {
-        private Cell cell;
-        private Button resetGameButton;
-        private Label currentTurn, winStatus;
-        public Grid generatableGrid;
-        List<Cell> cells;
-        public bool Turn;
-        const int GridColumnsRowsNum = 3; // Grid will be 5x5
+        Image box;
+        Button resetGameButton;
+        Label currentTurn, winStatus;
+        Grid playground;
+        Dictionary<Image, int> crossZeros;
+        private Image[,] boxPosition;
+        public bool turn;
+        const int GRID_COLUMNS_ROWS_NUM = 3; // Grid will be 5x5
         private const bool Cross = true;
         private const bool Zero = false;
 
         public CrossZeroGame()
         {
-            generatableGrid = StartGame();
+            crossZeros = new Dictionary<Image, int>();
+
+            playground = new Grid() {
+                HeightRequest = 375
+            };
+
+            for (int i = 0; i < GRID_COLUMNS_ROWS_NUM; i++)
+            {
+                playground.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                playground.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            }
+
+            boxPosition = new Image[3,3];
+            for (int i = 0; i < GRID_COLUMNS_ROWS_NUM; i++)
+            {
+                for (int j = 0; j < GRID_COLUMNS_ROWS_NUM; j++)
+                {
+                    box = new Image { HeightRequest = 125,
+                        BackgroundColor = Color.FromHex("#0099FF")
+                    };
+                    playground.Children.Add(box, i, j);
+                    boxPosition[i, j] = box;
+                    var tap = new TapGestureRecognizer();
+                    tap.Tapped += CrossOrZeroTapped;
+                    box.GestureRecognizers.Add(tap);
+                }
+            }
+
             currentTurn = new Label()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -52,112 +86,128 @@ namespace tthk_xamarin_grid
 
             StackLayout stackLayout = new StackLayout()
             {
-                Children = { currentTurn, winStatus, generatableGrid, buttonsLayout }
+                Children = { currentTurn, winStatus, playground, buttonsLayout }
             };
 
             Content = stackLayout;
             resetGameButton.Clicked += ResetButtonClicked;
+            GetRandomTurn();
         }
 
         private int CheckForWin()
         {
+            if (boxPosition[0,0].Source == boxPosition[1,1].Source && boxPosition[1,1].Source == boxPosition[2,2].Source
+            && boxPosition[0,0].Source != null && boxPosition[1,1].Source != null)
+            {
+                if (turn == Zero)
+                {
+                    return 1;
+                }
+                return 2;
+            }
+            if (boxPosition[0,2].Source == boxPosition[1,1].Source && boxPosition[1,1].Source == boxPosition[2,0].Source
+            && boxPosition[0,2].Source != null && boxPosition[1,1].Source != null)
+            {
+                if (turn == Zero)
+                {
+                    return 1;
+                }
+                return 2;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (boxPosition[0, i].Source == boxPosition[1, i].Source && boxPosition[1, i].Source == boxPosition[2, i].Source
+                                                                         && boxPosition[0, i].Source != null && boxPosition[1, i].Source != null)
+                {
+                    if (turn == Zero)
+                    {
+                        return 1;
+                    }
+                    return 2;
+                }
+                if (boxPosition[i, 0].Source == boxPosition[i, 1].Source && boxPosition[i, 1].Source == boxPosition[i, 2].Source
+                                                                         && boxPosition[i, 0].Source != null && boxPosition[i, 1].Source != null)
+                {
+                    if (turn == Zero)
+                    {
+                        return 1;
+                    }
+                    return 2;
+                }
+            }
+
             return 0;
         }
 
         private void CheckForBlankBoxes()
         {
-            int notBlankCells = 0;
-            foreach (Cell cell in cells)
+            int win = CheckForWin();
+            if (win == 1)
             {
-                if (cell.Status != CrossZeroValues.Zero)
-                {
-                    notBlankCells++;
-                }
+                winStatus.Text = "Cross player won.";
             }
-
-            if (notBlankCells == 0)
+            else if (win == 2)
             {
+                winStatus.Text = "Zero player won.";
+            }
+            else
+            {
+                winStatus.Text = "Draw.";
             }
         }
 
         private void GetRandomTurn()
         {
             Random random = new Random();
-            Turn = Convert.ToBoolean(random.Next(2));
-            currentTurn.Text = Turn ? "X player turn" : "O player turn";
+            turn = Convert.ToBoolean(random.Next(2));
+            currentTurn.Text = turn ? "X player turn" : "O player turn";
         }
 
         private void ResetButtonClicked(object sender, EventArgs e)
         {
-            StartGame();
+            ResetImages();
         }
 
-        private Grid FillGroundWithCells(Grid playground)
+        private void ResetImages()
         {
-            for (int i = 0; i < GridColumnsRowsNum; i++)
+            foreach (Image image in playground.Children)
             {
-                for (int j = 0; j < GridColumnsRowsNum; j++)
-                {
-                    cell = new Cell(i, j);
-                    generatableGrid.Children.Add(cell, cell.Row, cell.Column);
-                    cells.Add(cell);
-                    var tap = new TapGestureRecognizer();
-                    tap.Tapped += CrossOrZeroTapped;
-                    cell.GestureRecognizers.Add(tap);
-                }
+                image.Source = "";
             }
-
-            return playground;
-        }
-
-        private Grid SetRowAndColumnDefintions(Grid playground)
-        {
-            for (int i = 0; i < GridColumnsRowsNum; i++)
-            {
-                playground.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                playground.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            }
-
-            return playground;
-        }
-        
-        private Grid StartGame()
-        {
-            Grid playground = new Grid() {
-                HeightRequest = 375
-            };
-            playground = SetRowAndColumnDefintions(playground);
-            playground = FillGroundWithCells(playground);
+            crossZeros = new Dictionary<Image, int>();
             GetRandomTurn();
-            return playground;
         }
 
-        private void UpdateTurn()
+        private void UpdateTurn(Image box)
         {
-            if (Turn == Cross)
+            if (crossZeros[box] == 1)
             {
-                Turn = Zero;
+                box.Source = "cross.png";
+                turn = Zero;
+                currentTurn.Text = "O player turn";
             }
             else
             {
-                Turn = Cross;
+                box.Source = "zero.png";
+                turn = Cross;
+                currentTurn.Text = "X player turn";
             }
+            CheckForBlankBoxes();
         }
 
         private void CrossOrZeroTapped(object sender, EventArgs e)
         {
-            Cell tappedCell = sender as Cell;
-            if (tappedCell != null && 
-                Turn == Cross && 
-                tappedCell.Status == CrossZeroValues.Null)
+            Image box = sender as Image;
+            if (turn == Cross && !crossZeros.ContainsKey(box))
             {
-                tappedCell.Status = CrossZeroValues.Cross;
+                crossZeros[box] = 1;
+                UpdateTurn(box);
             }
-            else if (tappedCell != null && 
-                     Turn == Zero && 
-                     tappedCell.Status == CrossZeroValues.Null)
+            else if (turn == Zero && !crossZeros.ContainsKey(box))
             {
-                tappedCell.Status = CrossZeroValues.Zero;
+                crossZeros[box] = 2;
+                UpdateTurn(box);
             }
         }
     }
