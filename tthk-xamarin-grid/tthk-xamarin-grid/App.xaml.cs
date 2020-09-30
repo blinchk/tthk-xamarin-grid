@@ -1,12 +1,13 @@
-﻿namespace tthk_xamarin_grid
+﻿using Xamarin.Forms;
+
+namespace tthk_xamarin_grid
 {
     public partial class App
     {
         public App()
         {
             InitializeComponent();
-
-            MainPage = new CrossZeroGame();
+            MainPage = new NavigationPage(new CrossZeroGame());
         }
 
         protected override void OnStart()

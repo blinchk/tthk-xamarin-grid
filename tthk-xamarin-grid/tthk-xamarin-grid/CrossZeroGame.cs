@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Resources;
 using System.Text;
@@ -26,6 +27,7 @@ namespace tthk_xamarin_grid
 
         public CrossZeroGame()
         {
+            Title = "Tic-Tac-Toe Game";
             crossZeros = new Dictionary<Image, int>();
 
             playground = new Grid() {
@@ -91,49 +93,62 @@ namespace tthk_xamarin_grid
 
             Content = stackLayout;
             resetGameButton.Clicked += ResetButtonClicked;
-            GetRandomTurn();
+            GetFirstPlayer();
         }
 
+        public async void GetFirstPlayer()
+        {
+            string firstPlayer = await DisplayActionSheet("Who is first player?", "Cancel", null, "Cross", "Zero");
+            if (firstPlayer == "Cross")
+            {
+                turn = true;
+            }
+            else
+            {
+                turn = false;
+            }
+            currentTurn.Text = turn ? "X player turn" : "O player turn";
+        }
+
+        private int GetWinner()
+        {
+            if (turn == Zero)
+            {
+                return 1;
+            }
+            return 2;
+        }
+        
         private int CheckForWin()
         {
-            if (boxPosition[0,0].Source == boxPosition[1,1].Source && boxPosition[1,1].Source == boxPosition[2,2].Source
-            && boxPosition[0,0].Source != null && boxPosition[1,1].Source != null)
+            if (boxPosition[0,0].Source != null && 
+                boxPosition[1,1].Source != null && 
+                boxPosition[2,2].Source != null &&
+                crossZeros[boxPosition[0,0]] == crossZeros[boxPosition[1,1]] && 
+                crossZeros[boxPosition[1,1]] == crossZeros[boxPosition[2,2]])
             {
-                if (turn == Zero)
-                {
-                    return 1;
-                }
-                return 2;
+                return GetWinner();
             }
-            if (boxPosition[0,2].Source == boxPosition[1,1].Source && boxPosition[1,1].Source == boxPosition[2,0].Source
-            && boxPosition[0,2].Source != null && boxPosition[1,1].Source != null)
+            if (boxPosition[0,2].Source != null && boxPosition[1,1].Source != null &&  boxPosition[2,0].Source != null &&
+                crossZeros[boxPosition[0,2]] == crossZeros[boxPosition[1,1]] && 
+                crossZeros[boxPosition[1,1]] == crossZeros[boxPosition[2,0]])
             {
-                if (turn == Zero)
-                {
-                    return 1;
-                }
-                return 2;
+                return GetWinner();
             }
 
             for (int i = 0; i < 3; i++)
             {
-                if (boxPosition[0, i].Source == boxPosition[1, i].Source && boxPosition[1, i].Source == boxPosition[2, i].Source
-                                                                         && boxPosition[0, i].Source != null && boxPosition[1, i].Source != null)
+                if (boxPosition[0,i].Source != null && boxPosition[1,i].Source != null && boxPosition[2,i].Source != null &&
+                    crossZeros[boxPosition[0,i]] == crossZeros[boxPosition[1,i]] && 
+                    crossZeros[boxPosition[1,i]] == crossZeros[boxPosition[2,i]])
                 {
-                    if (turn == Zero)
-                    {
-                        return 1;
-                    }
-                    return 2;
+                    return GetWinner();
                 }
-                if (boxPosition[i, 0].Source == boxPosition[i, 1].Source && boxPosition[i, 1].Source == boxPosition[i, 2].Source
-                                                                         && boxPosition[i, 0].Source != null && boxPosition[i, 1].Source != null)
+                if (boxPosition[i,0].Source != null && boxPosition[i,1].Source != null && boxPosition[i,2].Source != null &&
+                    crossZeros[boxPosition[i,0]] == crossZeros[boxPosition[i,1]] && 
+                    crossZeros[boxPosition[i,1]] == crossZeros[boxPosition[i,0]])
                 {
-                    if (turn == Zero)
-                    {
-                        return 1;
-                    }
-                    return 2;
+                    return GetWinner();
                 }
             }
 
@@ -173,7 +188,7 @@ namespace tthk_xamarin_grid
         {
             foreach (Image image in playground.Children)
             {
-                image.Source = "";
+                image.Source = null;
             }
             crossZeros = new Dictionary<Image, int>();
             GetRandomTurn();
@@ -208,6 +223,10 @@ namespace tthk_xamarin_grid
             {
                 crossZeros[box] = 2;
                 UpdateTurn(box);
+            }
+            else
+            {
+                DisplayAlert("Message", "Enemy has been choosed this box", "OK");
             }
         }
     }
