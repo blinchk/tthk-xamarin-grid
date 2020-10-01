@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Resources;
-using System.Text;
-
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
-using Xamarin.Forms.Markup;
-using Xamarin.Forms.Xaml;
-
 namespace tthk_xamarin_grid
 {
-	public class CrossZeroGame : ContentPage
+    public class CrossZeroGame : ContentPage
     {
         Image box;
         Button resetGameButton;
@@ -161,10 +152,14 @@ namespace tthk_xamarin_grid
             if (win == 1)
             {
                 winStatus.Text = "Cross player won.";
+                DisplayAlert("Win", "Cross player won", "OK");
+                ResetImages();
             }
             else if (win == 2)
             {
                 winStatus.Text = "Zero player won.";
+                DisplayAlert("Win", "Zero player won", "OK");
+                ResetImages();
             }
             else
             {
