@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using Xamarin.Forms;
 namespace tthk_xamarin_grid
 {
     public class CrossZeroGame : ContentPage
     {
-        Image box;
-        Button resetGameButton;
-        Label currentTurn, winStatus;
-        Grid playground;
-        Dictionary<Image, int> crossZeros;
+        private Image box;
+        private Button resetGameButton;
+        private Label currentTurn, winStatus;
+        private Grid playground;
+        private Dictionary<Image, int> crossZeros;
         private Image[,] boxPosition;
         public bool turn;
         const int GRID_COLUMNS_ROWS_NUM = 3; // Grid will be 5x5
@@ -20,7 +23,6 @@ namespace tthk_xamarin_grid
         {
             Title = "Tic-Tac-Toe Game";
             crossZeros = new Dictionary<Image, int>();
-
             playground = new Grid() {
                 HeightRequest = 375
             };
@@ -116,13 +118,15 @@ namespace tthk_xamarin_grid
                 boxPosition[1,1].Source != null && 
                 boxPosition[2,2].Source != null &&
                 crossZeros[boxPosition[0,0]] == crossZeros[boxPosition[1,1]] && 
-                crossZeros[boxPosition[1,1]] == crossZeros[boxPosition[2,2]])
+                crossZeros[boxPosition[1,1]] == crossZeros[boxPosition[2,2]] &&
+                crossZeros[boxPosition[0, 0]] == crossZeros[boxPosition[2, 2]])
             {
                 return GetWinner();
             }
             if (boxPosition[0,2].Source != null && boxPosition[1,1].Source != null &&  boxPosition[2,0].Source != null &&
                 crossZeros[boxPosition[0,2]] == crossZeros[boxPosition[1,1]] && 
-                crossZeros[boxPosition[1,1]] == crossZeros[boxPosition[2,0]])
+                crossZeros[boxPosition[1,1]] == crossZeros[boxPosition[2,0]] &&
+                crossZeros[boxPosition[0,2]] == crossZeros[boxPosition[2,0]])
             {
                 return GetWinner();
             }
@@ -131,13 +135,15 @@ namespace tthk_xamarin_grid
             {
                 if (boxPosition[0,i].Source != null && boxPosition[1,i].Source != null && boxPosition[2,i].Source != null &&
                     crossZeros[boxPosition[0,i]] == crossZeros[boxPosition[1,i]] && 
-                    crossZeros[boxPosition[1,i]] == crossZeros[boxPosition[2,i]])
+                    crossZeros[boxPosition[1,i]] == crossZeros[boxPosition[2,i]] &&
+                    crossZeros[boxPosition[0, i]] == crossZeros[boxPosition[2, i]])
                 {
                     return GetWinner();
                 }
                 if (boxPosition[i,0].Source != null && boxPosition[i,1].Source != null && boxPosition[i,2].Source != null &&
                     crossZeros[boxPosition[i,0]] == crossZeros[boxPosition[i,1]] && 
-                    crossZeros[boxPosition[i,1]] == crossZeros[boxPosition[i,0]])
+                    crossZeros[boxPosition[i,1]] == crossZeros[boxPosition[i,2]] &&
+                    crossZeros[boxPosition[i,0]] == crossZeros[boxPosition[i,2]])
                 {
                     return GetWinner();
                 }
@@ -186,6 +192,11 @@ namespace tthk_xamarin_grid
                 image.Source = null;
             }
             crossZeros = new Dictionary<Image, int>();
+            foreach(var x in crossZeros.Keys)
+            {
+                crossZeros[x] = 0;
+            }
+            winStatus.Text = null;
             GetRandomTurn();
         }
 
