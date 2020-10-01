@@ -182,6 +182,7 @@ namespace tthk_xamarin_grid
 
         private void ResetButtonClicked(object sender, EventArgs e)
         {
+            winStatus.Text = null;
             ResetImages();
         }
 
